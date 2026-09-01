@@ -35,6 +35,49 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
 
         {/* Content */}
         <div className="p-5 overflow-y-auto space-y-4 flex-1">
+          {/* Developer Card (SharwaR Simon) */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-stone-900 text-white border border-stone-800 shadow-md space-y-3.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3.5">
+                <div className="relative shrink-0">
+                  <img
+                    src="https://i.postimg.cc/59zYT6rb/IMG-20260712-WA0020.jpg"
+                    alt="SharwaR Simon - Lead App Developer"
+                    referrerPolicy="no-referrer"
+                    className="w-14 h-14 rounded-2xl object-cover border-2 border-[#FF6B00] shadow-md bg-stone-800"
+                  />
+                  <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-stone-900 rounded-full" title="Online & Available" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-black text-white">SharwaR Simon</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+                      App Developer
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-400 font-medium">Full-Stack & Real-Time App Specialist</p>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-stone-300 leading-relaxed">
+              Crafting fast, clean, and interactive mobile-first web applications with modern architectures, real-time protocols, and seamless user experiences.
+            </p>
+
+            <div className="pt-2.5 border-t border-stone-800 flex items-center justify-between gap-3">
+              <span className="text-[11px] text-stone-400">Available for hire & custom builds:</span>
+              <a
+                href="https://www.fiverr.com/symon123"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3.5 py-1.5 rounded-xl bg-[#1dbf73] hover:bg-[#19a463] text-white text-xs font-black transition flex items-center gap-1.5 shadow-sm"
+              >
+                <span>Hire on Fiverr</span>
+                <span className="text-[10px] font-mono">↗</span>
+              </a>
+            </div>
+          </div>
+
           <div className="p-4 rounded-xl bg-orange-50/60 border border-orange-100 space-y-2">
             <div className="flex items-center gap-2 text-sm font-bold text-[#3E2723]">
               <span className="w-2.5 h-2.5 rounded-full bg-[#FF6B00]" />

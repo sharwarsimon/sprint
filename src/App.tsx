@@ -15,6 +15,8 @@ import { NewsPage } from './pages/NewsPage';
 import { GamesPage } from './pages/GamesPage';
 import { ReadersPage } from './pages/ReadersPage';
 import { AboutPage } from './pages/AboutPage';
+import { MusicPage } from './pages/MusicPage';
+import { VideoPage } from './pages/VideoPage';
 import { AdminPage } from './pages/AdminPage';
 
 function AppContent() {
@@ -120,6 +122,18 @@ function AppContent() {
         return (
           <AboutPage
             onNavigate={navigate}
+          />
+        );
+      case '/music':
+        return (
+          <MusicPage
+            onBack={() => navigate('/')}
+          />
+        );
+      case '/video':
+        return (
+          <VideoPage
+            onBack={() => navigate('/')}
           />
         );
       case '/admin':

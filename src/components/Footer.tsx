@@ -71,6 +71,8 @@ export const Footer: React.FC<FooterProps> = ({ currentPath = '/', onNavigate })
               <button onClick={() => onNavigate('/')} className="hover:text-[#FF6B00] transition">Home</button>
               <button onClick={() => onNavigate('/chat')} className="hover:text-[#FF6B00] transition text-[#FF6B00]">5 Chat Rooms</button>
               <button onClick={() => onNavigate('/members')} className="hover:text-[#FF6B00] transition">Live Members ({totalOnline})</button>
+              <button onClick={() => onNavigate('/music')} className="hover:text-[#FF6B00] transition">Music</button>
+              <button onClick={() => onNavigate('/video')} className="hover:text-[#FF6B00] transition">Video</button>
               <button onClick={() => onNavigate('/community')} className="hover:text-[#FF6B00] transition">Community</button>
               <button onClick={() => onNavigate('/news')} className="hover:text-[#FF6B00] transition">News</button>
               <button onClick={() => onNavigate('/about')} className="hover:text-[#FF6B00] transition">About</button>

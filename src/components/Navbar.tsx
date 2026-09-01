@@ -170,6 +170,20 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenP
           </button>
 
           <div className="pt-2 border-t border-stone-100 grid grid-cols-2 gap-1.5">
+            <button
+              onClick={() => handleNav('/music')}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#3E2723] bg-orange-50/70 hover:bg-orange-100/80 border border-orange-200/60"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#FF6B00]" />
+              <span>🎵 Music Lounge</span>
+            </button>
+            <button
+              onClick={() => handleNav('/video')}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#3E2723] bg-orange-50/70 hover:bg-orange-100/80 border border-orange-200/60"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#FF6B00]" />
+              <span>🎬 Video Theater</span>
+            </button>
             {navItems.filter(i => i.path !== '/chat' && i.path !== '/members').map((item) => {
               const Icon = item.icon;
               return (

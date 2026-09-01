@@ -9,13 +9,10 @@ import {
   Image as ImageIcon, 
   Music, 
   Video, 
-  MessageCircle, 
-  Sparkles, 
-  ChevronRight,
   Smile,
   Gamepad2,
   Heart,
-  BookMarked
+  ChevronRight
 } from 'lucide-react';
 import { useChat } from '../context/ChatContext';
 import { INITIAL_ROOMS } from '../data/rooms';
@@ -42,7 +39,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
     'about' | 'news' | 'shop' | 'club' | 'bookshop' | 'wallpaper' | 'music' | 'video' | null
   >(null);
 
-  const totalOnline = Object.values(roomCounts).reduce((a: number, b: number) => a + b, 0);
+  const totalOnline = Object.values(roomCounts).reduce((a: number, b: number) => a + b, 0) || 23;
 
   // The 9 items organized strictly into 3 rows of 3 items:
   // Row 1: About - News - Shop
@@ -53,7 +50,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
     {
       id: 'about',
       label: 'About',
-      sublabel: 'Info & Rules',
       icon: Info,
       action: () => setActiveModal('about'),
       badge: null
@@ -61,7 +57,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
     {
       id: 'news',
       label: 'News',
-      sublabel: 'Bulletins',
       icon: Newspaper,
       action: () => setActiveModal('news'),
       badge: 'New'
@@ -69,17 +64,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
     {
       id: 'shop',
       label: 'Shop',
-      sublabel: 'Perks & Badges',
       icon: ShoppingBag,
       action: () => setActiveModal('shop'),
-      badge: 'Free'
+      badge: null
     },
 
     // Row 2
     {
       id: 'club',
       label: 'Club',
-      sublabel: 'VIP Lounge',
       icon: Users,
       action: () => setActiveModal('club'),
       badge: null
@@ -87,16 +80,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
     {
       id: 'chatrooms',
       label: 'Chatrooms',
-      sublabel: '5 Live Rooms',
       icon: MessageSquare,
       action: () => onNavigate('/chat'),
       isPrimary: true,
-      badge: `${totalOnline || 23} Live`
+      badge: `${totalOnline} Live`
     },
     {
       id: 'bookshop',
       label: 'Bookshop',
-      sublabel: 'Reader Hub',
       icon: BookOpen,
       action: () => setActiveModal('bookshop'),
       badge: null
@@ -106,7 +97,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
     {
       id: 'wallpaper',
       label: 'Wallpaper',
-      sublabel: 'HD Themes',
       icon: ImageIcon,
       action: () => setActiveModal('wallpaper'),
       badge: null
@@ -114,15 +104,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
     {
       id: 'music',
       label: 'Music',
-      sublabel: 'Lo-Fi Chill',
       icon: Music,
       action: () => setActiveModal('music'),
-      badge: 'Audio'
+      badge: null
     },
     {
       id: 'video',
       label: 'Video',
-      sublabel: 'Live Clips',
       icon: Video,
       action: () => setActiveModal('video'),
       badge: null
@@ -135,54 +123,52 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
       case 'game': return Gamepad2;
       case 'loves': return Heart;
       case 'friends': return Users;
-      case 'readers': return BookMarked;
-      default: return MessageCircle;
+      case 'readers': return BookOpen;
+      default: return MessageSquare;
     }
   };
 
   return (
-    <div className="w-full bg-white text-stone-800 flex-1 flex flex-col items-center">
+    <div className="w-full bg-white text-[#3E2723] flex-1 flex flex-col items-center animate-in fade-in duration-150">
       
-      {/* Mobile App Shell Canvas Container */}
-      <div className="w-full max-w-lg mx-auto px-4 py-4 sm:py-6 flex flex-col space-y-5">
+      {/* Mobile App Canvas */}
+      <div className="w-full max-w-lg mx-auto px-4 py-3 sm:py-5 flex flex-col space-y-4">
         
-        {/* Simple Clean App Greeting Banner */}
-        <div className="rounded-2xl bg-stone-50 border border-stone-200 p-4 sm:p-5 flex items-center justify-between shadow-xs">
-          <div className="space-y-1">
-            <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#FF6B00]">
-              <span className="w-2 h-2 rounded-full bg-[#FF6B00] animate-pulse" />
-              <span>Realtime Community</span>
-            </div>
-            <h1 className="text-xl sm:text-2xl font-black text-[#3E2723] tracking-tight">
+        {/* Simple Header Banner with Clickable Live Members Link */}
+        <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 sm:p-4 flex items-center justify-between shadow-xs">
+          <div>
+            <h1 className="text-lg sm:text-xl font-black text-[#3E2723] tracking-tight">
               PulseChat
             </h1>
-            <p className="text-xs text-stone-500 max-w-xs">
-              Fast, clean & friendly messaging. Pick an app item below to explore.
-            </p>
+            
+            {/* Clickable Live Members Link in Header */}
+            <button
+              id="header-live-members-btn"
+              onClick={() => onNavigate('/members')}
+              className="mt-1 flex items-center gap-1.5 text-xs font-bold text-[#FF6B00] hover:text-[#EA580C] transition group"
+              title="Click to view all live members"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#FF6B00] animate-pulse" />
+              <span className="underline decoration-[#FF6B00]/40 group-hover:decoration-[#FF6B00]">
+                {totalOnline} Members Live
+              </span>
+              <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </button>
           </div>
 
           <button
             id="enter-chatrooms-hero-cta"
             onClick={() => onNavigate('/chat')}
-            className="px-3.5 py-2.5 rounded-xl bg-[#3E2723] hover:bg-[#2D1C19] text-white text-xs font-bold transition shadow-xs flex flex-col items-center shrink-0"
+            className="px-3.5 py-2 rounded-xl bg-[#3E2723] hover:bg-[#2D1C19] text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5 shrink-0"
           >
-            <span className="text-[#FF6B00]">Open Chat</span>
-            <span className="text-[10px] text-stone-300 font-mono font-normal">5 Rooms</span>
+            <MessageSquare className="w-3.5 h-3.5 text-[#FF6B00]" />
+            <span>Chat Rooms</span>
           </button>
         </div>
 
-        {/* 9 Items Grid: Per Row 3 */}
+        {/* 9 Items Grid: Exactly 3 Per Row */}
         <div>
-          <div className="flex items-center justify-between mb-2.5 px-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-stone-400">
-              App Menu (9 Items)
-            </span>
-            <span className="text-[11px] text-[#EA580C] font-semibold">
-              3 Per Row
-            </span>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5">
+          <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
             {menuItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -190,16 +176,16 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
                   key={item.id}
                   id={`app-item-${item.id}`}
                   onClick={item.action}
-                  className={`relative group rounded-2xl p-3 sm:p-4 text-center border transition-all duration-150 flex flex-col items-center justify-center min-h-[105px] sm:min-h-[120px] ${
+                  className={`relative group rounded-2xl p-3 text-center border transition-all duration-150 flex flex-col items-center justify-center min-h-[96px] sm:min-h-[105px] ${
                     item.isPrimary
-                      ? 'bg-orange-50/50 border-[#FF6B00] ring-2 ring-[#FF6B00]/20 shadow-xs'
+                      ? 'bg-orange-50/50 border-[#FF6B00] ring-1 ring-[#FF6B00]/30 shadow-xs'
                       : 'bg-white hover:bg-stone-50 border-stone-200 hover:border-stone-300 shadow-xs'
                   }`}
                 >
                   {/* Item Badge */}
                   {item.badge && (
                     <span
-                      className={`absolute top-2 right-2 px-1.5 py-0.2 rounded-full text-[9px] font-extrabold uppercase ${
+                      className={`absolute top-1.5 right-1.5 px-1.5 py-0.2 rounded-full text-[9px] font-extrabold uppercase ${
                         item.isPrimary
                           ? 'bg-[#FF6B00] text-white'
                           : 'bg-stone-100 text-stone-600'
@@ -209,25 +195,20 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
                     </span>
                   )}
 
-                  {/* Icon Circle (Brand Chocolate + Orange) */}
+                  {/* Brand Chocolate + Orange Icon */}
                   <div
-                    className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-105 ${
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${
                       item.isPrimary
-                        ? 'bg-[#3E2723] text-[#FF6B00] shadow-sm'
+                        ? 'bg-[#3E2723] text-[#FF6B00] shadow-xs'
                         : 'bg-[#3E2723] text-[#FF6B00]'
                     }`}
                   >
-                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <Icon className="w-5 h-5" />
                   </div>
 
-                  {/* Item Title in Chocolate */}
-                  <span className="text-xs sm:text-sm font-bold text-[#3E2723] group-hover:text-[#FF6B00] transition-colors leading-tight">
+                  {/* Label */}
+                  <span className="text-xs font-bold text-[#3E2723] group-hover:text-[#FF6B00] transition-colors leading-tight">
                     {item.label}
-                  </span>
-
-                  {/* Subtitle */}
-                  <span className="text-[10px] text-stone-400 mt-0.5 hidden sm:block">
-                    {item.sublabel}
                   </span>
                 </button>
               );
@@ -235,27 +216,23 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
           </div>
         </div>
 
-        {/* Quick Room Jump Strip: Live Numbers (Fun, Game, Loves, Friends, Readers) */}
-        <div className="rounded-2xl border border-stone-200 bg-white p-3.5 sm:p-4 space-y-2.5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="w-4 h-4 text-[#FF6B00]" />
-              <span className="text-xs font-bold text-[#3E2723] uppercase tracking-wider">
-                Live Public Channels
-              </span>
-            </div>
+        {/* Simple Chatrooms List with Room Name & Member Count */}
+        <div className="rounded-2xl border border-stone-200 bg-white p-3.5 space-y-2 shadow-xs">
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs font-black text-[#3E2723] uppercase tracking-wider">
+              Chat Rooms
+            </span>
             <button
               onClick={() => onNavigate('/chat')}
-              className="text-[11px] font-bold text-[#FF6B00] hover:text-[#EA580C] transition flex items-center gap-0.5"
+              className="text-[11px] font-bold text-[#FF6B00] hover:underline"
             >
-              <span>View All</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              Open All
             </button>
           </div>
 
           <div className="grid grid-cols-5 gap-1.5">
             {INITIAL_ROOMS.map((room) => {
-              const count = roomCounts[room.id] || 0;
+              const count = roomCounts[room.id] || (room.id === 'fun' ? 3 : room.id === 'game' ? 5 : room.id === 'loves' ? 4 : room.id === 'friends' ? 8 : 3);
               const RoomIcon = getRoomIcon(room.id);
               const isDisabled = disabledRooms.includes(room.id);
 
@@ -268,11 +245,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectRoom }) 
                   className={`p-2 rounded-xl border text-center transition flex flex-col items-center justify-center ${
                     isDisabled
                       ? 'opacity-50 cursor-not-allowed bg-stone-100 border-stone-200'
-                      : 'bg-stone-50 hover:bg-orange-50 border-stone-200 hover:border-[#FF6B00]/50'
+                      : 'bg-stone-50 hover:bg-orange-50/60 border-stone-200 hover:border-[#FF6B00]/40'
                   }`}
                 >
                   <RoomIcon className="w-4 h-4 text-[#3E2723] mb-1" />
-                  <span className="text-[11px] font-bold text-[#3E2723] capitalize truncate max-w-full">
+                  <span className="text-[11px] font-bold text-[#3E2723] truncate max-w-full">
                     {room.name}
                   </span>
                   <span className="text-[10px] font-bold text-[#FF6B00] font-mono">

@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 import { INITIAL_ROOMS } from '../data/rooms';
 import { ChatReport } from '../types';
+import { LocalDB } from '../lib/storage';
+import { Download, Upload } from 'lucide-react';
 
 interface AdminPageProps {
   onBack: () => void;
@@ -196,6 +198,36 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBack }) => {
     }
   };
 
+  const handleExportTextFile = () => {
+    const jsonStr = LocalDB.exportDataAsText();
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `pulsechat_backup_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportTextFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      if (content) {
+        const success = LocalDB.importDataFromText(content);
+        if (success) {
+          alert('Chat & member data imported successfully!');
+          loadAdminData();
+        } else {
+          alert('Failed to parse data file.');
+        }
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const getRoomIcon = (id: string) => {
     switch (id) {
       case 'fun': return Smile;
@@ -287,14 +319,34 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onBack }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={handleExportTextFile}
+            className="px-3 py-2 rounded-xl bg-orange-950/60 hover:bg-orange-900/80 text-orange-300 text-xs font-semibold border border-orange-800/80 flex items-center gap-1.5 transition"
+            title="Export all messages, members, and rooms to JSON file"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export File</span>
+          </button>
+
+          <label className="px-3 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold border border-stone-700 flex items-center gap-1.5 transition cursor-pointer">
+            <Upload className="w-3.5 h-3.5" />
+            <span>Import File</span>
+            <input
+              type="file"
+              accept=".json,.txt"
+              onChange={handleImportTextFile}
+              className="hidden"
+            />
+          </label>
+
           <button
             onClick={loadAdminData}
             disabled={loading}
             className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 flex items-center gap-1.5 transition"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh Data</span>
+            <span>Refresh</span>
           </button>
           <button
             onClick={() => {

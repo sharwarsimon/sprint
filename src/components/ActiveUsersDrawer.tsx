@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Users, UserCheck, Shield, Sparkles } from 'lucide-react';
+import { X, Users, MessageSquare } from 'lucide-react';
 import { UserProfile } from '../types';
 import { useUser } from '../context/UserContext';
 
@@ -21,37 +21,37 @@ export const ActiveUsersDrawer: React.FC<ActiveUsersDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex justify-end bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex justify-end bg-stone-900/60 backdrop-blur-xs animate-in fade-in duration-100">
       <div 
         className="fixed inset-0" 
         onClick={onClose} 
       />
 
-      <div className="relative z-50 w-full max-w-xs h-full bg-slate-900 border-l border-slate-800 p-5 flex flex-col shadow-2xl text-slate-100 animate-in slide-in-from-right duration-200">
+      <div className="relative z-50 w-full max-w-xs h-full bg-white border-l border-stone-200 p-4 sm:p-5 flex flex-col shadow-2xl text-[#3E2723] animate-in slide-in-from-right duration-150">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-3 border-b border-stone-200">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600/30 text-cyan-300 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-[#3E2723] text-[#FF6B00] flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Active Members</h3>
-              <p className="text-[11px] text-slate-400">#{roomName.toLowerCase()} room ({users.length})</p>
+              <h3 className="text-sm font-black text-[#3E2723]">Room Members</h3>
+              <p className="text-[11px] text-stone-500 font-medium">#{roomName.toLowerCase()} ({users.length})</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-stone-400 hover:text-[#3E2723] hover:bg-stone-100 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Member list */}
-        <div className="flex-1 overflow-y-auto py-4 space-y-2">
+        <div className="flex-1 overflow-y-auto py-3 space-y-2">
           {users.length === 0 ? (
-            <div className="text-center py-8 text-xs text-slate-500">
+            <div className="text-center py-8 text-xs text-stone-400">
               No other members in this room right now.
             </div>
           ) : (
@@ -62,27 +62,27 @@ export const ActiveUsersDrawer: React.FC<ActiveUsersDrawerProps> = ({
               return (
                 <div
                   key={u.userId}
-                  className="flex items-center justify-between p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 transition"
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-stone-50 border border-stone-200 hover:bg-orange-50/40 transition"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="relative flex-shrink-0">
+                    <div className="relative shrink-0">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shadow"
-                        style={{ backgroundColor: u.avatarColor || '#6366f1' }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-xs"
+                        style={{ backgroundColor: u.avatarColor || '#3E2723' }}
                       >
                         {u.name.charAt(0).toUpperCase()}
                       </div>
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-900" />
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
                     </div>
 
                     <div className="truncate">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-white">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-[#3E2723]">
                         <span className="truncate">{u.name}</span>
                         {isMe && (
-                          <span className="text-[10px] bg-indigo-500/30 text-indigo-300 px-1 rounded font-mono">YOU</span>
+                          <span className="text-[9px] bg-orange-100 text-[#FF6B00] px-1 py-0.2 rounded font-mono font-black">YOU</span>
                         )}
                       </div>
-                      <div className="text-[10px] text-slate-400">
+                      <div className="text-[10px] text-stone-400">
                         {u.gender}
                       </div>
                     </div>
@@ -90,17 +90,11 @@ export const ActiveUsersDrawer: React.FC<ActiveUsersDrawerProps> = ({
 
                   {!isMe && (
                     <button
-                      onClick={() => {
-                        if (isBlocked) {
-                          // Handled via context if needed
-                        } else {
-                          blockUser(u.userId);
-                        }
-                      }}
-                      className={`text-[10px] font-semibold px-2 py-1 rounded-lg border transition ${
+                      onClick={() => blockUser(u.userId)}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border transition ${
                         isBlocked
-                          ? 'bg-rose-950/60 border-rose-800 text-rose-300'
-                          : 'bg-slate-700 text-slate-300 border-slate-600 hover:text-white'
+                          ? 'bg-rose-50 border-rose-200 text-rose-600'
+                          : 'bg-white text-stone-600 border-stone-200 hover:text-[#3E2723]'
                       }`}
                     >
                       {isBlocked ? 'Blocked' : 'Block'}
@@ -113,8 +107,9 @@ export const ActiveUsersDrawer: React.FC<ActiveUsersDrawerProps> = ({
         </div>
 
         {/* Footer info */}
-        <div className="pt-3 border-t border-slate-800 text-[11px] text-slate-500 text-center">
-          Realtime Presence Active
+        <div className="pt-2.5 border-t border-stone-200 text-[11px] text-stone-400 text-center flex items-center justify-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span>Realtime Live Presence</span>
         </div>
 
       </div>

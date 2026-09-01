@@ -7,10 +7,8 @@ import {
   Users, 
   BookOpen, 
   ChevronDown, 
-  Info, 
-  UserCheck, 
-  Sparkles,
-  ShieldCheck
+  MessageSquare,
+  Sparkles
 } from 'lucide-react';
 import { ChatRoomInfo } from '../types';
 import { INITIAL_ROOMS } from '../data/rooms';
@@ -29,11 +27,9 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   onlineCount,
   onBack,
   onSwitchRoom,
-  onToggleUsersDrawer,
-  isUsersDrawerOpen
+  onToggleUsersDrawer
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showRules, setShowRules] = useState(false);
 
   const getRoomIcon = (id: string) => {
     switch (id) {
@@ -49,52 +45,79 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
   const IconComponent = getRoomIcon(currentRoom.id);
 
   return (
-    <div className="relative z-30 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-3 sm:px-6 py-3 transition-colors">
-      <div className="flex items-center justify-between gap-2 max-w-7xl mx-auto">
+    <header className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-stone-200 px-3 sm:px-4 py-2.5 shadow-xs">
+      <div className="flex items-center justify-between gap-2 max-w-2xl mx-auto">
         
-        {/* Left: Back button & Room Title */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Left: Back Arrow + Room Info (WhatsApp/Messenger Style) */}
+        <div className="flex items-center gap-2 min-w-0">
           <button
             id="chat-back-button"
             onClick={onBack}
-            className="p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition flex items-center gap-1 text-xs font-semibold"
+            className="p-1.5 -ml-1 rounded-full text-[#3E2723] hover:bg-stone-100 transition shrink-0"
             aria-label="Back to rooms"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="hidden sm:inline">Rooms</span>
           </button>
 
-          {/* Room Title & Switcher Trigger */}
+          {/* Room Avatar */}
+          <div className="w-9 h-9 rounded-full bg-[#3E2723] text-[#FF6B00] flex items-center justify-center shrink-0 shadow-xs">
+            <IconComponent className="w-4 h-4" />
+          </div>
+
+          {/* Room Name & Clickable Members Link */}
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-sm sm:text-base font-black text-[#3E2723] truncate">
+                {currentRoom.name}
+              </h2>
+            </div>
+            
+            {/* Direct Member Link inside the room */}
+            <button
+              id="header-view-members-link"
+              onClick={onToggleUsersDrawer}
+              className="text-[11px] font-bold text-[#FF6B00] hover:text-[#EA580C] hover:underline flex items-center gap-1 transition text-left"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+              <span>{onlineCount || 1} online • View members</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Room Switcher & Members Button */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          
+          {/* Members Button */}
+          <button
+            id="chat-members-button"
+            onClick={onToggleUsersDrawer}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#3E2723] text-xs font-bold transition shadow-xs"
+            title="View room members"
+          >
+            <Users className="w-3.5 h-3.5 text-[#FF6B00]" />
+            <span>Members ({onlineCount || 1})</span>
+          </button>
+
+          {/* Room Switcher Dropdown */}
           <div className="relative">
             <button
               id="room-switcher-button"
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 transition text-left group"
+              className="p-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-[#3E2723] text-xs font-bold transition flex items-center gap-1"
+              title="Switch room"
             >
-              <div className="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-300 flex items-center justify-center">
-                <IconComponent className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1 text-sm sm:text-base font-bold text-white uppercase tracking-wider">
-                  <span>{currentRoom.name}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
-                </div>
-                <div className="text-[10px] text-slate-400 hidden sm:block max-w-[150px] truncate">
-                  {currentRoom.topic}
-                </div>
-              </div>
+              <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Room Switcher Dropdown */}
             {dropdownOpen && (
               <>
                 <div 
                   className="fixed inset-0 z-40" 
                   onClick={() => setDropdownOpen(false)} 
                 />
-                <div className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl p-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                    Switch Chat Room
+                <div className="absolute top-full right-0 mt-2 w-48 rounded-2xl bg-white border border-stone-200 shadow-xl p-1.5 z-50 animate-in fade-in duration-100">
+                  <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-400">
+                    Switch Room
                   </div>
                   {INITIAL_ROOMS.map((r) => {
                     const RIcon = getRoomIcon(r.id);
@@ -107,19 +130,17 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
                           onSwitchRoom(r.id);
                           setDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition ${
+                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-bold transition ${
                           isCurrent
-                            ? 'bg-indigo-600/30 text-cyan-300 border border-indigo-500/30'
-                            : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                            ? 'bg-orange-50 text-[#FF6B00]'
+                            : 'text-[#3E2723] hover:bg-stone-100'
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
-                          <RIcon className="w-4 h-4" />
+                        <div className="flex items-center gap-2">
+                          <RIcon className="w-3.5 h-3.5 text-[#3E2723]" />
                           <span>{r.name}</span>
                         </div>
-                        {isCurrent && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                        )}
+                        {isCurrent && <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00]" />}
                       </button>
                     );
                   })}
@@ -127,71 +148,10 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({
               </>
             )}
           </div>
-        </div>
-
-        {/* Right: Realtime Online Counter & Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          
-          {/* Realtime Active Member Badge */}
-          <div 
-            id="chat-online-counter"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/90 border border-slate-700 text-xs font-bold text-slate-200 shadow-sm"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span>{onlineCount} Online</span>
-          </div>
-
-          {/* Room info / rules modal toggle */}
-          <button
-            id="room-info-button"
-            onClick={() => setShowRules(!showRules)}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
-            title="Room guidelines"
-          >
-            <Info className="w-4 h-4" />
-          </button>
-
-          {/* Active users drawer button */}
-          <button
-            id="toggle-users-drawer-button"
-            onClick={onToggleUsersDrawer}
-            className={`p-2 rounded-xl transition flex items-center gap-1.5 text-xs font-medium ${
-              isUsersDrawerOpen
-                ? 'bg-indigo-600 text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-            }`}
-            title="Active Members"
-          >
-            <UserCheck className="w-4 h-4" />
-            <span className="hidden md:inline">Members</span>
-          </button>
 
         </div>
+
       </div>
-
-      {/* Guidelines Accordion Drawer */}
-      {showRules && (
-        <div className="mt-3 pt-3 border-t border-slate-800 max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-400 animate-in fade-in duration-150">
-          <div className="flex items-center gap-2 text-slate-300 font-medium">
-            <ShieldCheck className="w-4 h-4 text-cyan-400" />
-            <span>Room Topic: {currentRoom.topic}</span>
-          </div>
-          <div className="flex items-center gap-3 text-[11px] text-slate-400">
-            <span>• No abusive words</span>
-            <span>• Keep spam away</span>
-            <span>• Respect everyone</span>
-            <button
-              onClick={() => setShowRules(false)}
-              className="text-cyan-400 hover:underline font-semibold"
-            >
-              Dismiss
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    </header>
   );
 };

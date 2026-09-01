@@ -9,6 +9,7 @@ import { UserEntryModal } from './components/UserEntryModal';
 import { HomePage } from './pages/HomePage';
 import { RoomsPage } from './pages/RoomsPage';
 import { ChatRoomPage } from './pages/ChatRoomPage';
+import { LiveMembersPage } from './pages/LiveMembersPage';
 import { CommunityPage } from './pages/CommunityPage';
 import { NewsPage } from './pages/NewsPage';
 import { GamesPage } from './pages/GamesPage';
@@ -80,6 +81,13 @@ function AppContent() {
           <RoomsPage
             onSelectRoom={handleSelectRoom}
             onBackHome={() => navigate('/')}
+          />
+        );
+      case '/members':
+        return (
+          <LiveMembersPage
+            onBack={() => navigate('/')}
+            onSelectRoom={handleSelectRoom}
           />
         );
       case '/community':

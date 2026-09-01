@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MoreVertical, Flag, ShieldOff, Check, CheckCheck } from 'lucide-react';
+import { MoreVertical, Flag, ShieldOff, CheckCheck } from 'lucide-react';
 import { ChatMessage } from '../types';
 
 interface MessageBubbleProps {
@@ -30,8 +30,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   // System message render
   if (message.isSystem) {
     return (
-      <div className="flex justify-center my-3">
-        <div className="px-3.5 py-1 rounded-full bg-slate-800/60 border border-slate-700/50 text-[11px] font-medium text-slate-400 max-w-md text-center shadow-sm">
+      <div className="flex justify-center my-1.5">
+        <div className="px-2.5 py-0.5 rounded-full bg-stone-200/80 text-[10px] font-medium text-stone-600 text-center">
           {message.message}
         </div>
       </div>
@@ -40,99 +40,90 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   const timeString = formatTime(message.createdAt);
 
-  const getGenderBadge = (gender?: string) => {
-    if (!gender) return null;
-    if (gender === 'Male') return <span className="text-[10px] text-cyan-400 font-mono">👦</span>;
-    if (gender === 'Female') return <span className="text-[10px] text-pink-400 font-mono">👧</span>;
-    return <span className="text-[10px] text-indigo-300 font-mono">✨</span>;
-  };
-
   return (
     <div
       id={`message-${message.id}`}
-      className={`group flex items-end gap-2 my-2.5 max-w-full ${
+      className={`group flex items-end gap-1.5 my-1 max-w-full ${
         isCurrentUser ? 'justify-end' : 'justify-start'
       }`}
     >
       {/* Left Avatar for other users */}
       {!isCurrentUser && (
         <div
-          className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold text-white shadow-md select-none mb-1"
-          style={{ backgroundColor: message.userColor || '#6366f1' }}
-          title={message.userName}
+          className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-[11px] font-black text-white shadow-xs select-none mb-0.5"
+          style={{ backgroundColor: message.userColor || '#3E2723' }}
         >
           {message.userName.charAt(0).toUpperCase()}
         </div>
       )}
 
-      {/* Message content container */}
-      <div className={`relative max-w-[85%] sm:max-w-[70%] flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'}`}>
+      {/* Message bubble container */}
+      <div className={`relative max-w-[82%] sm:max-w-[70%] flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'}`}>
         
-        {/* User metadata header (for other users) */}
-        {!isCurrentUser && (
-          <div className="flex items-center gap-1.5 px-1 mb-1 text-xs">
-            <span className="font-bold text-slate-200">{message.userName}</span>
-            {getGenderBadge(message.userGender)}
-          </div>
-        )}
-
-        {/* Message bubble */}
+        {/* Message bubble (WhatsApp / Messenger Style) */}
         <div
-          className={`relative px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words shadow-md transition-all ${
+          className={`relative px-3.5 py-2 rounded-2xl text-xs sm:text-sm leading-relaxed break-words shadow-xs transition-all ${
             isCurrentUser
-              ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white rounded-br-none shadow-indigo-900/30'
-              : 'bg-slate-800/90 text-slate-100 border border-slate-700/80 rounded-bl-none shadow-slate-950/40'
+              ? 'bg-[#3E2723] text-white rounded-br-xs'
+              : 'bg-white text-[#3E2723] border border-stone-200 rounded-bl-xs'
           }`}
         >
-          {/* Message Text with Safe Wrapping */}
+          {/* Sender name for other users */}
+          {!isCurrentUser && (
+            <div className="font-bold text-[11px] text-[#FF6B00] mb-0.5">
+              {message.userName}
+            </div>
+          )}
+
+          {/* Message Text */}
           <p className="whitespace-pre-wrap font-normal select-text">{message.message}</p>
 
-          {/* Timestamp footer */}
-          <div className={`flex items-center justify-end gap-1 mt-1 text-[10px] select-none ${
-            isCurrentUser ? 'text-indigo-200' : 'text-slate-400'
+          {/* Timestamp & Status */}
+          <div className={`flex items-center justify-end gap-1 mt-0.5 text-[9px] font-medium select-none ${
+            isCurrentUser ? 'text-stone-300' : 'text-stone-400'
           }`}>
             <span>{timeString}</span>
             {isCurrentUser && (
-              <CheckCheck className="w-3 h-3 text-cyan-200 inline" />
+              <CheckCheck className="w-3 h-3 text-[#FF6B00] inline" />
             )}
           </div>
         </div>
 
-        {/* Action menu trigger for other users */}
+        {/* Action menu trigger for other users on hover */}
         {!isCurrentUser && (
-          <div className="absolute top-0 right-0 -mr-7 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-1 right-0 -mr-6 opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="relative">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-                title="Message options"
+                className="p-1 rounded-full text-stone-400 hover:text-[#3E2723] hover:bg-stone-200 transition"
+                title="Options"
               >
-                <MoreVertical className="w-3.5 h-3.5" />
+                <MoreVertical className="w-3 h-3" />
               </button>
 
               {menuOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-                  <div className="absolute top-full right-0 mt-1 w-44 rounded-xl bg-slate-900 border border-slate-700 shadow-2xl p-1 z-50 animate-in fade-in duration-100 text-xs">
+                  <div className="absolute top-full right-0 mt-1 w-36 rounded-xl bg-white border border-stone-200 shadow-xl p-1 z-50 animate-in fade-in duration-100 text-xs">
                     <button
                       onClick={() => {
                         setMenuOpen(false);
                         onReport(message.id);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-rose-300 hover:bg-rose-950/50 transition font-medium"
+                      className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition font-bold"
                     >
-                      <Flag className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Report Message</span>
+                      <Flag className="w-3 h-3 text-rose-500" />
+                      <span>Report</span>
                     </button>
                     <button
                       onClick={() => {
                         setMenuOpen(false);
                         onBlockUser(message.userId, message.userName);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 transition font-medium"
+                      className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-stone-700 hover:bg-stone-100 transition font-bold"
                     >
-                      <ShieldOff className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Block {message.userName}</span>
+                      <ShieldOff className="w-3 h-3 text-stone-500" />
+                      <span>Block</span>
                     </button>
                   </div>
                 </>

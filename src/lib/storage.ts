@@ -8,7 +8,45 @@ const STORAGE_KEYS = {
   BANS: 'pulsechat_bans_v1',
   SETTINGS: 'pulsechat_settings_v1',
   CUSTOM_WALLPAPER: 'pulsechat_custom_wallpaper',
-  PURCHASED_ITEMS: 'pulsechat_purchased_items'
+  PURCHASED_ITEMS: 'pulsechat_purchased_items',
+  ACTIVE_MEMBERS: 'pulsechat_active_members_v1'
+};
+
+// Initial baseline mock active members per room (Works standalone with zero database)
+export const DEFAULT_ACTIVE_MEMBERS: Record<string, UserProfile[]> = {
+  fun: [
+    { userId: 'u_101', name: 'Simon', age: 24, gender: 'Male', avatarColor: '#EA580C', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_102', name: 'Maya', age: 22, gender: 'Female', avatarColor: '#3E2723', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_103', name: 'Alex', age: 26, gender: 'Other', avatarColor: '#F97316', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() }
+  ],
+  game: [
+    { userId: 'u_201', name: 'RyuGamer', age: 23, gender: 'Male', avatarColor: '#3E2723', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_202', name: 'PixelQueen', age: 21, gender: 'Female', avatarColor: '#EA580C', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_203', name: 'ShadowStrike', age: 28, gender: 'Male', avatarColor: '#4E342E', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_204', name: 'Nova', age: 19, gender: 'Other', avatarColor: '#F97316', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_205', name: 'Apex_Leo', age: 25, gender: 'Male', avatarColor: '#D97706', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() }
+  ],
+  loves: [
+    { userId: 'u_301', name: 'Elena', age: 25, gender: 'Female', avatarColor: '#EA580C', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_302', name: 'Lucas', age: 27, gender: 'Male', avatarColor: '#4E342E', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_303', name: 'Amara', age: 22, gender: 'Female', avatarColor: '#3E2723', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_304', name: 'Jordan', age: 24, gender: 'Other', avatarColor: '#F97316', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() }
+  ],
+  friends: [
+    { userId: 'u_401', name: 'Sam', age: 23, gender: 'Other', avatarColor: '#F97316', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_402', name: 'Chloe', age: 21, gender: 'Female', avatarColor: '#3E2723', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_403', name: 'David', age: 29, gender: 'Male', avatarColor: '#EA580C', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_404', name: 'Hannah', age: 24, gender: 'Female', avatarColor: '#4E342E', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_405', name: 'Marcus', age: 26, gender: 'Male', avatarColor: '#78350F', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_406', name: 'Zoe', age: 22, gender: 'Female', avatarColor: '#F59E0B', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_407', name: 'Liam', age: 25, gender: 'Male', avatarColor: '#3E2723', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_408', name: 'Kai', age: 20, gender: 'Other', avatarColor: '#EA580C', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() }
+  ],
+  readers: [
+    { userId: 'u_501', name: 'BookWorm_Leo', age: 28, gender: 'Male', avatarColor: '#4E342E', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_502', name: 'Sophia', age: 24, gender: 'Female', avatarColor: '#EA580C', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() },
+    { userId: 'u_503', name: 'Julian', age: 31, gender: 'Male', avatarColor: '#3E2723', joinedAt: new Date().toISOString(), lastActiveAt: new Date().toISOString() }
+  ]
 };
 
 // Initial mock baseline messages per room if fresh install
@@ -41,7 +79,7 @@ export const DEFAULT_ROOM_MESSAGES: Record<string, ChatMessage[]> = {
       userName: 'Alex',
       userGender: 'Other',
       userColor: '#F97316',
-      message: 'Haha classic! Love the clean mobile app look.',
+      message: 'Haha classic! Love the clean mobile chat look.',
       createdAt: new Date(Date.now() - 1000 * 60 * 2).toISOString()
     }
   ],
@@ -55,6 +93,16 @@ export const DEFAULT_ROOM_MESSAGES: Record<string, ChatMessage[]> = {
       userColor: '#3E2723',
       message: 'Anyone playing co-op tonight? Looking for a squad!',
       createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString()
+    },
+    {
+      id: 'msg_g2',
+      roomId: 'game',
+      userId: 'u_202',
+      userName: 'PixelQueen',
+      userGender: 'Female',
+      userColor: '#EA580C',
+      message: 'Count me in! Ready for some fast rounds.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString()
     }
   ],
   loves: [
@@ -258,6 +306,64 @@ export const LocalDB = {
     if (!items.includes(itemId)) {
       items.push(itemId);
       setLocalData(STORAGE_KEYS.PURCHASED_ITEMS, items);
+    }
+  },
+
+  getActiveMembers: (): Record<string, UserProfile[]> => {
+    return getLocalData<Record<string, UserProfile[]>>(STORAGE_KEYS.ACTIVE_MEMBERS, DEFAULT_ACTIVE_MEMBERS);
+  },
+
+  getAllLiveMembersList: (): Array<UserProfile & { room: string; roomName: string }> => {
+    const roomsMap = LocalDB.getActiveMembers();
+    const result: Array<UserProfile & { room: string; roomName: string }> = [];
+    
+    const roomDisplayNames: Record<string, string> = {
+      fun: 'Fun Room',
+      game: 'Game Room',
+      loves: 'Loves Room',
+      friends: 'Friends Room',
+      readers: 'Readers Room'
+    };
+
+    Object.entries(roomsMap).forEach(([roomId, members]) => {
+      members.forEach((member) => {
+        result.push({
+          ...member,
+          room: roomId,
+          roomName: roomDisplayNames[roomId] || `${roomId} Room`
+        });
+      });
+    });
+
+    return result;
+  },
+
+  saveActiveMembers: (data: Record<string, UserProfile[]>): void => {
+    setLocalData(STORAGE_KEYS.ACTIVE_MEMBERS, data);
+    UniversalChatBus.getInstance().broadcast('ACTIVE_MEMBERS_UPDATED', data);
+  },
+
+  exportDataAsText: (): string => {
+    const backup = {
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      messages: getLocalData(STORAGE_KEYS.MESSAGES, DEFAULT_ROOM_MESSAGES),
+      roomCounts: getLocalData(STORAGE_KEYS.ROOM_COUNTS, {}),
+      activeMembers: getLocalData(STORAGE_KEYS.ACTIVE_MEMBERS, DEFAULT_ACTIVE_MEMBERS),
+      reports: getLocalData(STORAGE_KEYS.REPORTS, [])
+    };
+    return JSON.stringify(backup, null, 2);
+  },
+
+  importDataFromText: (jsonString: string): boolean => {
+    try {
+      const parsed = JSON.parse(jsonString);
+      if (parsed.messages) setLocalData(STORAGE_KEYS.MESSAGES, parsed.messages);
+      if (parsed.roomCounts) setLocalData(STORAGE_KEYS.ROOM_COUNTS, parsed.roomCounts);
+      if (parsed.activeMembers) setLocalData(STORAGE_KEYS.ACTIVE_MEMBERS, parsed.activeMembers);
+      return true;
+    } catch {
+      return false;
     }
   }
 };

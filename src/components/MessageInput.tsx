@@ -26,7 +26,7 @@ export const MessageInput: React.FC<MessageInputProps> = ({
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 100)}px`;
     }
   }, [text]);
 
@@ -74,45 +74,42 @@ export const MessageInput: React.FC<MessageInputProps> = ({
       setErrorMsg('Failed to send message');
     } finally {
       setIsSending(false);
-      // Refocus input
       setTimeout(() => textareaRef.current?.focus(), 50);
     }
   };
 
   const handleAddEmoji = (emoji: string) => {
     if (text.length + emoji.length <= 500) {
-      setText(prev => prev + emoji);
+      setText((prev) => prev + emoji);
     }
     setShowEmojiPicker(false);
     textareaRef.current?.focus();
   };
 
-  const charCount = text.length;
-
   return (
-    <div className="w-full bg-slate-900 border-t border-slate-800 p-2.5 sm:p-4 z-20 transition-colors">
-      <div className="max-w-4xl mx-auto">
+    <div className="w-full bg-white border-t border-stone-200 p-2 sm:p-3 z-20">
+      <div className="max-w-2xl mx-auto">
         
-        {/* Error message pill */}
+        {/* Error message */}
         {errorMsg && (
-          <div className="mb-2 p-2 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-between animate-in fade-in duration-150">
-            <div className="flex items-center gap-1.5">
-              <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+          <div className="mb-2 p-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs flex items-center justify-between animate-in fade-in duration-100">
+            <div className="flex items-center gap-1.5 font-medium">
+              <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
               <span>{errorMsg}</span>
             </div>
-            <button onClick={() => setErrorMsg(null)} className="text-rose-400 font-bold ml-2">×</button>
+            <button onClick={() => setErrorMsg(null)} className="text-rose-500 font-bold ml-2">×</button>
           </div>
         )}
 
-        {/* Emoji Quick Bar Dropdown */}
+        {/* Emoji Bar */}
         {showEmojiPicker && (
-          <div className="mb-2 p-2 rounded-2xl bg-slate-800 border border-slate-700 shadow-xl flex items-center gap-1.5 overflow-x-auto animate-in slide-in-from-bottom-2 duration-150">
+          <div className="mb-2 p-1.5 rounded-2xl bg-stone-50 border border-stone-200 shadow-sm flex items-center gap-1 overflow-x-auto">
             {QUICK_EMOJIS.map((emoji) => (
               <button
                 key={emoji}
                 type="button"
                 onClick={() => handleAddEmoji(emoji)}
-                className="p-1.5 rounded-lg text-lg hover:bg-slate-700 transition transform hover:scale-110 active:scale-95"
+                className="p-1.5 rounded-lg text-lg hover:bg-stone-200 transition transform hover:scale-110 active:scale-95"
               >
                 {emoji}
               </button>
@@ -120,18 +117,16 @@ export const MessageInput: React.FC<MessageInputProps> = ({
           </div>
         )}
 
-        {/* Main Input Control Bar */}
-        <div className="flex items-end gap-2 bg-slate-800/90 border border-slate-700 rounded-2xl px-3 py-1.5 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-400/20 transition-all shadow-inner">
+        {/* Main Messenger / WhatsApp Input Row */}
+        <div className="flex items-end gap-1.5 bg-stone-100 rounded-2xl px-2 py-1.5 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#FF6B00]/20 focus-within:border-[#FF6B00] border border-transparent transition-all">
           
-          {/* Emoji toggle button */}
+          {/* Emoji Toggle */}
           <button
             type="button"
             id="emoji-picker-toggle"
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-            className={`p-2 rounded-xl text-slate-400 hover:text-cyan-300 hover:bg-slate-700/80 transition flex-shrink-0 mb-0.5 ${
-              showEmojiPicker ? 'text-cyan-300 bg-slate-700' : ''
-            }`}
-            title="Emoji reactions"
+            className="p-2 rounded-xl text-stone-500 hover:text-[#FF6B00] transition shrink-0"
+            title="Add Emoji"
           >
             <Smile className="w-5 h-5" />
           </button>
@@ -145,39 +140,29 @@ export const MessageInput: React.FC<MessageInputProps> = ({
             onChange={handleTextChange}
             onKeyDown={handleKeyDown}
             disabled={disabled || isSending}
-            placeholder={disabled ? "Chat is disabled" : "Type a message... (Enter to send, Shift+Enter for new line)"}
-            className="flex-1 max-h-28 bg-transparent text-slate-100 placeholder-slate-400 text-sm py-2 px-1 resize-none focus:outline-none leading-relaxed"
+            placeholder={disabled ? "Chat is disabled" : "Message..."}
+            className="flex-1 max-h-24 bg-transparent text-[#3E2723] placeholder-stone-400 text-sm py-1.5 px-1 resize-none focus:outline-none leading-relaxed"
           />
 
-          {/* Character counter & Send Button */}
-          <div className="flex items-center gap-2 flex-shrink-0 mb-1">
-            {charCount > 0 && (
-              <span className={`text-[11px] font-mono hidden sm:inline ${
-                charCount > 450 ? 'text-amber-400 font-bold' : 'text-slate-400'
-              }`}>
-                {charCount}/500
-              </span>
+          {/* Send Button */}
+          <button
+            type="button"
+            id="send-message-button"
+            onClick={handleSend}
+            disabled={!text.trim() || isSending || disabled}
+            className={`p-2 rounded-xl transition shrink-0 ${
+              text.trim() && !disabled
+                ? 'bg-[#3E2723] text-[#FF6B00] hover:bg-[#2D1C19] active:scale-95 shadow-xs'
+                : 'bg-stone-200 text-stone-400 cursor-not-allowed'
+            }`}
+            title="Send Message"
+          >
+            {isSending ? (
+              <Loader2 className="w-4 h-4 animate-spin text-[#FF6B00]" />
+            ) : (
+              <Send className="w-4 h-4 fill-current" />
             )}
-
-            <button
-              id="chat-send-message-button"
-              type="button"
-              onClick={handleSend}
-              disabled={!text.trim() || isSending || disabled}
-              className={`p-2.5 rounded-xl font-bold transition-all duration-150 flex items-center justify-center ${
-                text.trim() && !disabled && !isSending
-                  ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-400 hover:to-cyan-400 text-white shadow-lg shadow-indigo-600/30 scale-100 active:scale-95'
-                  : 'bg-slate-700/50 text-slate-500 cursor-not-allowed'
-              }`}
-              title="Send message"
-            >
-              {isSending ? (
-                <Loader2 className="w-4 h-4 animate-spin text-white" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </button>
-          </div>
+          </button>
 
         </div>
 

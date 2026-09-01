@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useChat } from '../context/ChatContext';
 import { useUser } from '../context/UserContext';
 import { INITIAL_ROOMS } from '../data/rooms';
@@ -8,6 +8,7 @@ import { MessageInput } from '../components/MessageInput';
 import { ReportModal } from '../components/ReportModal';
 import { ActiveUsersDrawer } from '../components/ActiveUsersDrawer';
 import { AlertCircle, Lock, ShieldAlert } from 'lucide-react';
+import { LocalDB } from '../lib/storage';
 
 interface ChatRoomPageProps {
   roomId: string;
@@ -45,7 +46,6 @@ export const ChatRoomPage: React.FC<ChatRoomPageProps> = ({
   const [notification, setNotification] = useState<string | null>(null);
 
   const roomInfo = INITIAL_ROOMS.find(r => r.id === roomId) || INITIAL_ROOMS[0];
-  const onlineCount = roomCounts[roomId] || 0;
   const isRoomDisabled = disabledRooms.includes(roomId);
 
   // Automatically join the room when component mounts or roomId changes
@@ -61,28 +61,50 @@ export const ChatRoomPage: React.FC<ChatRoomPageProps> = ({
     };
   }, [roomId, user, joinRoom, leaveRoom, onOpenProfileModal]);
 
+  // Combine live active users with baseline members for this room so members are always visible
+  const roomMembersList = useMemo(() => {
+    const defaultMembers = LocalDB.getActiveMembers()[roomId] || [];
+    const combined = [...activeUsers];
+    
+    // Add default members if not already in combined
+    defaultMembers.forEach((dm) => {
+      if (!combined.some((u) => u.userId === dm.userId)) {
+        combined.push(dm);
+      }
+    });
+
+    // Ensure current user is in list if not already
+    if (user && !combined.some((u) => u.userId === user.userId)) {
+      combined.unshift(user);
+    }
+
+    return combined;
+  }, [activeUsers, roomId, user]);
+
+  const onlineCount = roomMembersList.length || roomCounts[roomId] || 1;
+
   const handleBlockUser = (targetUserId: string, targetUserName: string) => {
     blockUser(targetUserId);
-    setNotification(`Blocked ${targetUserName}. Their messages are now hidden.`);
-    setTimeout(() => setNotification(null), 4000);
+    setNotification(`Blocked ${targetUserName}.`);
+    setTimeout(() => setNotification(null), 3000);
   };
 
   if (connectionStatus === 'banned') {
     return (
-      <div className="flex-1 flex items-center justify-center p-6 bg-slate-950">
-        <div className="max-w-md w-full p-8 rounded-3xl bg-slate-900 border border-rose-500/40 text-center shadow-2xl space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
-            <ShieldAlert className="w-8 h-8" />
+      <div className="flex-1 flex items-center justify-center p-6 bg-white">
+        <div className="max-w-md w-full p-6 sm:p-8 rounded-3xl bg-stone-50 border border-stone-200 text-center shadow-lg space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
+            <ShieldAlert className="w-7 h-7" />
           </div>
-          <h2 className="text-2xl font-bold text-white">Access Restricted</h2>
-          <p className="text-sm text-slate-300">
-            {banReason || 'You have been restricted from participating in the chat community.'}
+          <h2 className="text-xl font-black text-[#3E2723]">Access Restricted</h2>
+          <p className="text-xs text-stone-600">
+            {banReason || 'You have been restricted from participating.'}
           </p>
           <button
             onClick={onBack}
-            className="px-6 py-2.5 rounded-xl bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold text-xs transition"
+            className="px-5 py-2.5 rounded-xl bg-[#3E2723] text-white hover:bg-[#2D1C19] font-bold text-xs transition shadow-xs"
           >
-            Return to Homepage
+            Return to Rooms
           </button>
         </div>
       </div>
@@ -90,9 +112,9 @@ export const ChatRoomPage: React.FC<ChatRoomPageProps> = ({
   }
 
   return (
-    <div className="relative flex-1 flex flex-col h-[calc(100vh-4rem)] max-h-[calc(100vh-4rem)] w-full overflow-hidden bg-slate-950">
+    <div className="relative flex-1 flex flex-col h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] max-h-[calc(100vh-3.5rem)] sm:max-h-[calc(100vh-4rem)] w-full overflow-hidden bg-white">
       
-      {/* 1. Chat Header */}
+      {/* 1. Messenger / WhatsApp Chat Header */}
       <ChatHeader
         currentRoom={roomInfo}
         onlineCount={onlineCount}
@@ -102,20 +124,20 @@ export const ChatRoomPage: React.FC<ChatRoomPageProps> = ({
         isUsersDrawerOpen={isUsersDrawerOpen}
       />
 
-      {/* Floating Notification / Error Bar */}
+      {/* Notification Banner */}
       {(notification || errorMessage) && (
-        <div className={`px-4 py-2 text-xs font-semibold flex items-center justify-between z-30 transition-all ${
-          errorMessage ? 'bg-rose-600/90 text-white' : 'bg-indigo-600/90 text-white'
+        <div className={`px-4 py-1.5 text-xs font-bold flex items-center justify-between z-30 transition-all ${
+          errorMessage ? 'bg-rose-500 text-white' : 'bg-[#3E2723] text-white'
         }`}>
           <div className="flex items-center gap-2 max-w-2xl mx-auto">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#FF6B00]" />
             <span>{errorMessage || notification}</span>
           </div>
           <button 
             onClick={() => setNotification(null)}
-            className="text-white hover:opacity-80 font-bold text-sm"
+            className="text-white hover:opacity-80 font-bold text-xs"
           >
-            ×
+            ✕
           </button>
         </div>
       )}
@@ -123,22 +145,22 @@ export const ChatRoomPage: React.FC<ChatRoomPageProps> = ({
       {/* Disabled room overlay */}
       {isRoomDisabled ? (
         <div className="flex-1 flex items-center justify-center p-6 text-center">
-          <div className="max-w-md p-8 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto border border-rose-500/30">
-              <Lock className="w-7 h-7" />
+          <div className="max-w-md p-6 rounded-3xl bg-stone-50 border border-stone-200 shadow-sm space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-stone-200 text-stone-600 flex items-center justify-center mx-auto">
+              <Lock className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white">Room Temporarily Closed</h3>
-            <p className="text-xs text-slate-400">
-              The #{roomInfo.name.toLowerCase()} room has been paused by an administrator. Please switch to another room.
+            <h3 className="text-base font-black text-[#3E2723]">Room Temporarily Closed</h3>
+            <p className="text-xs text-stone-500">
+              The #{roomInfo.name.toLowerCase()} room is closed right now.
             </p>
             <div className="flex flex-wrap justify-center gap-2 pt-2">
               {INITIAL_ROOMS.filter(r => r.id !== roomId && !disabledRooms.includes(r.id)).map(r => (
                 <button
                   key={r.id}
                   onClick={() => onSwitchRoom(r.id)}
-                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition"
+                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-stone-100 text-xs font-bold text-[#3E2723] border border-stone-200 transition shadow-xs"
                 >
-                  Join #{r.name}
+                  Join {r.name}
                 </button>
               ))}
             </div>
@@ -156,20 +178,20 @@ export const ChatRoomPage: React.FC<ChatRoomPageProps> = ({
             roomName={roomInfo.name}
           />
 
-          {/* 3. Fixed Bottom Message Input */}
+          {/* 3. Bottom WhatsApp / Messenger Input */}
           <MessageInput
             onSendMessage={sendMessage}
             onTyping={sendTyping}
-            disabled={connectionStatus !== 'connected'}
+            disabled={connectionStatus === 'banned'}
           />
         </>
       )}
 
-      {/* 4. Active Users Slide-Out Drawer */}
+      {/* 4. Active Room Members Drawer (Linked directly from Header!) */}
       <ActiveUsersDrawer
         isOpen={isUsersDrawerOpen}
         onClose={() => setIsUsersDrawerOpen(false)}
-        users={activeUsers}
+        users={roomMembersList}
         roomName={roomInfo.name}
       />
 

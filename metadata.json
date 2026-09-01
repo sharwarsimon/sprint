@@ -1,0 +1,6 @@
+{
+  "name": "Realtime Community Chat Rooms",
+  "description": "A production-grade mobile-first real-time community chat platform with 5 live rooms, active presence tracking, user session entry, moderation, and admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

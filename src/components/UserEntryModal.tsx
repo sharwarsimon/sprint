@@ -78,25 +78,25 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl text-slate-100 p-6 sm:p-7">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white border border-stone-200 shadow-2xl text-[#3E2723] p-6 sm:p-7">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+          className="absolute top-4 right-4 p-2 rounded-xl text-stone-400 hover:text-[#3E2723] hover:bg-stone-100 transition"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="mb-6">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-500 flex items-center justify-center text-white mb-3 shadow-lg shadow-indigo-500/20">
+        <div className="mb-5">
+          <div className="w-12 h-12 rounded-xl bg-[#3E2723] flex items-center justify-center text-[#FF6B00] mb-3 shadow-sm">
             <User className="w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight">Enter Chat</h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <h2 className="text-xl font-bold text-[#3E2723] tracking-tight">Enter Chat Room</h2>
+          <p className="text-xs text-stone-500 mt-1">
             Choose your nickname and quick profile before joining the public room.
           </p>
         </div>
@@ -106,8 +106,8 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
           
           {/* Name Field */}
           <div>
-            <label htmlFor="user-name-input" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-              Display Name <span className="text-rose-400">*</span>
+            <label htmlFor="user-name-input" className="block text-xs font-bold uppercase tracking-wider text-[#3E2723] mb-1.5">
+              Display Name <span className="text-[#FF6B00]">*</span>
             </label>
             <input
               id="user-name-input"
@@ -119,12 +119,12 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
               }}
               placeholder="e.g. Simon, Sarah, Alex"
               maxLength={25}
-              className={`w-full px-4 py-2.5 rounded-xl bg-slate-800/90 border text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 transition ${
-                errors.name ? 'border-rose-500 focus:ring-rose-500/30' : 'border-slate-700 focus:border-cyan-400 focus:ring-cyan-400/20'
+              className={`w-full px-4 py-2.5 rounded-xl bg-stone-50 border text-sm text-[#3E2723] placeholder-stone-400 focus:outline-none focus:ring-2 transition ${
+                errors.name ? 'border-rose-500 focus:ring-rose-500/20' : 'border-stone-300 focus:border-[#FF6B00] focus:ring-[#FF6B00]/20'
               }`}
             />
             {errors.name && (
-              <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
+              <p className="text-xs text-rose-500 mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" />
                 <span>{errors.name}</span>
               </p>
@@ -133,8 +133,8 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
 
           {/* Age Field */}
           <div>
-            <label htmlFor="user-age-input" className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-              Age <span className="text-rose-400">*</span>
+            <label htmlFor="user-age-input" className="block text-xs font-bold uppercase tracking-wider text-[#3E2723] mb-1.5">
+              Age <span className="text-[#FF6B00]">*</span>
             </label>
             <input
               id="user-age-input"
@@ -147,13 +147,13 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
                 if (errors.age) setErrors(prev => ({ ...prev, age: undefined }));
               }}
               placeholder="13 - 100"
-              className={`w-full px-4 py-2.5 rounded-xl bg-slate-800/90 border text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 transition ${
-                errors.age ? 'border-rose-500 focus:ring-rose-500/30' : 'border-slate-700 focus:border-cyan-400 focus:ring-cyan-400/20'
+              className={`w-full px-4 py-2.5 rounded-xl bg-stone-50 border text-sm text-[#3E2723] placeholder-stone-400 focus:outline-none focus:ring-2 transition ${
+                errors.age ? 'border-rose-500 focus:ring-rose-500/20' : 'border-stone-300 focus:border-[#FF6B00] focus:ring-[#FF6B00]/20'
               }`}
             />
-            <p className="text-[11px] text-slate-500 mt-1">Age is kept private and not displayed publicly in chat.</p>
+            <p className="text-[11px] text-stone-500 mt-1">Age is kept private and not displayed publicly in chat.</p>
             {errors.age && (
-              <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
+              <p className="text-xs text-rose-500 mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" />
                 <span>{errors.age}</span>
               </p>
@@ -162,18 +162,18 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
 
           {/* Gender Field */}
           <div>
-            <span className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
-              Gender <span className="text-rose-400">*</span>
+            <span className="block text-xs font-bold uppercase tracking-wider text-[#3E2723] mb-2">
+              Gender <span className="text-[#FF6B00]">*</span>
             </span>
             <div className="grid grid-cols-3 gap-2.5">
               {(['Male', 'Female', 'Other'] as Gender[]).map((option) => (
                 <label
                   key={option}
                   id={`gender-option-${option.toLowerCase()}`}
-                  className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition select-none ${
+                  className={`flex items-center justify-center gap-1.5 p-2.5 rounded-xl border text-xs font-bold cursor-pointer transition select-none ${
                     gender === option
-                      ? 'bg-indigo-600/30 border-indigo-400 text-cyan-300 ring-1 ring-indigo-400'
-                      : 'bg-slate-800/60 border-slate-700/80 text-slate-300 hover:bg-slate-800'
+                      ? 'bg-orange-50 border-[#FF6B00] text-[#FF6B00] ring-1 ring-[#FF6B00]'
+                      : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
                   }`}
                 >
                   <input
@@ -192,7 +192,7 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
               ))}
             </div>
             {errors.gender && (
-              <p className="text-xs text-rose-400 mt-1 flex items-center gap-1">
+              <p className="text-xs text-rose-500 mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" />
                 <span>{errors.gender}</span>
               </p>
@@ -200,19 +200,19 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
           </div>
 
           {/* Community Guidelines Box */}
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 space-y-1.5">
-            <div className="flex items-center gap-1.5 font-bold text-slate-200">
-              <Shield className="w-4 h-4 text-cyan-400" />
+          <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-xs text-stone-600 space-y-1.5">
+            <div className="flex items-center gap-1.5 font-bold text-[#3E2723]">
+              <Shield className="w-4 h-4 text-[#FF6B00]" />
               <span>Community Rules:</span>
             </div>
-            <ul className="list-disc list-inside space-y-0.5 text-slate-400 text-[11px]">
+            <ul className="list-disc list-inside space-y-0.5 text-stone-500 text-[11px]">
               <li>Be respectful to everyone.</li>
               <li>No harassment, hate speech, or spam.</li>
               <li>No illegal or explicit content.</li>
               <li>Do not share sensitive personal information.</li>
             </ul>
 
-            <label className="flex items-center gap-2 pt-2 border-t border-slate-800/80 cursor-pointer select-none text-slate-300 font-medium text-xs">
+            <label className="flex items-center gap-2 pt-2 border-t border-stone-200 cursor-pointer select-none text-[#3E2723] font-semibold text-xs">
               <input
                 id="agree-rules-checkbox"
                 type="checkbox"
@@ -221,12 +221,12 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
                   setAgreed(e.target.checked);
                   if (errors.rules) setErrors(prev => ({ ...prev, rules: undefined }));
                 }}
-                className="w-4 h-4 rounded text-indigo-600 bg-slate-800 border-slate-600 focus:ring-indigo-500"
+                className="w-4 h-4 rounded text-[#FF6B00] bg-white border-stone-300 focus:ring-[#FF6B00]"
               />
               <span>I Agree to the Community Guidelines</span>
             </label>
             {errors.rules && (
-              <p className="text-xs text-rose-400 pt-1 flex items-center gap-1">
+              <p className="text-xs text-rose-500 pt-1 flex items-center gap-1">
                 <AlertCircle className="w-3.5 h-3.5" />
                 <span>{errors.rules}</span>
               </p>
@@ -237,9 +237,9 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
           <button
             id="enter-room-submit-button"
             type="submit"
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all duration-200 active:scale-98 flex items-center justify-center gap-2 mt-2"
+            className="w-full py-3.5 rounded-xl bg-[#3E2723] hover:bg-[#2D1C19] text-white font-bold text-sm shadow-md transition-all active:scale-98 flex items-center justify-center gap-2 mt-2"
           >
-            <span>I Agree & Enter Room</span>
+            <span>Agree & Enter Room</span>
           </button>
         </form>
 
@@ -247,3 +247,4 @@ export const UserEntryModal: React.FC<UserEntryModalProps> = ({
     </div>
   );
 };
+

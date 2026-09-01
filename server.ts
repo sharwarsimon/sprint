@@ -48,8 +48,12 @@ const ADMIN_PASSWORD = process.env.ADMIN_SECRET_KEY || 'admin123';
 
 // Storage paths
 const DATA_DIR = path.join(process.cwd(), 'data');
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+try {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+} catch (e) {
+  console.warn('Storage directory is read-only or unavailable (falling back to memory):', e);
 }
 
 const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');

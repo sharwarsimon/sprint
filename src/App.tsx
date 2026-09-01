@@ -134,7 +134,7 @@ function AppContent() {
   const isChatRoomActive = currentPath.startsWith('/chat/');
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div className="min-h-screen flex flex-col bg-white text-[#3E2723] selection:bg-orange-100 selection:text-[#EA580C]">
       
       {/* 1. Global Navigation Bar */}
       <Navbar
@@ -148,9 +148,9 @@ function AppContent() {
         {renderCurrentView()}
       </main>
 
-      {/* 3. Global Footer (Only show when not in an active chat room to maintain clean chat layout) */}
+      {/* 3. Global Footer (Only show when not in an active chat room to maintain clean mobile chat layout) */}
       {!isChatRoomActive && (
-        <Footer onNavigate={navigate} />
+        <Footer currentPath={currentPath} onNavigate={navigate} />
       )}
 
       {/* 4. Global User Entry / Profile Setup Modal */}

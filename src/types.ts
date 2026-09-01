@@ -54,6 +54,7 @@ export interface MessageReport {
   status?: 'pending' | 'reviewed' | 'dismissed' | 'actioned';
 }
 
+export type StoredReport = MessageReport;
 export type ChatReport = MessageReport;
 
 export interface AdminStats {
@@ -71,3 +72,33 @@ export interface BannedUser {
   bannedAt: string;
   bannedBy: string;
 }
+
+export type BanRecord = BannedUser;
+
+export interface ShopItem {
+  id: string;
+  name: string;
+  category: 'sticker' | 'badge' | 'theme' | 'perk';
+  price: string;
+  icon: string;
+  description: string;
+  popular?: boolean;
+}
+
+export interface WallpaperItem {
+  id: string;
+  title: string;
+  tag: string;
+  previewUrl: string;
+  colorScheme: string;
+  downloads: number;
+}
+
+export interface MusicTrack {
+  id: string;
+  title: string;
+  artist: string;
+  duration: string;
+  genre: string;
+}
+

@@ -4,6 +4,7 @@ import {
   Home, 
   Users, 
   Newspaper, 
+  ShoppingBag,
   Gamepad2, 
   BookOpen, 
   Info, 
@@ -31,10 +32,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenP
 
   const navItems = [
     { label: 'Home', path: '/', icon: Home },
+    { label: 'Chat Rooms', path: '/chat', icon: MessageSquare },
     { label: 'Community', path: '/community', icon: Users },
     { label: 'News', path: '/news', icon: Newspaper },
-    { label: 'Games', path: '/games', icon: Gamepad2 },
-    { label: 'Readers', path: '/readers', icon: BookOpen },
     { label: 'About', path: '/about', icon: Info },
   ];
 
@@ -44,48 +44,42 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenP
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-slate-100 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-stone-200 text-[#3E2723] shadow-xs">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           
-          {/* Brand Logo */}
+          {/* Brand Logo - Mobile App Header Brand */}
           <div 
             id="brand-logo"
             onClick={() => handleNav('/')}
-            className="flex items-center gap-3 cursor-pointer group select-none"
+            className="flex items-center gap-2.5 cursor-pointer select-none group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-rose-500 p-0.5 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200">
-              <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-indigo-400 group-hover:text-cyan-300 transition-colors" />
-              </div>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#3E2723] flex items-center justify-center text-[#FF6B00] shadow-sm transition-transform group-hover:scale-105">
+              <MessageSquare className="w-5 h-5 fill-[#FF6B00]/20" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5 font-bold text-lg tracking-tight">
-                <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-rose-400 bg-clip-text text-transparent">
-                  PulseChat
-                </span>
-                <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  Live
-                </span>
+              <div className="flex items-center gap-1 font-black text-base sm:text-lg tracking-tight text-[#3E2723]">
+                <span>PulseChat</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF6B00]" />
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">Public Realtime Community</p>
+              <p className="text-[10px] text-stone-500 font-medium hidden sm:block">Realtime Mobile Chat</p>
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1">
+          {/* Center / Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPath === item.path;
               return (
                 <button
                   key={item.path}
-                  id={`nav-link-${item.label.toLowerCase()}`}
+                  id={`nav-link-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   onClick={() => handleNav(item.path)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition ${
                     isActive
-                      ? 'bg-slate-800 text-cyan-400 shadow-sm'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-orange-50 text-[#FF6B00] border border-orange-200'
+                      : 'text-stone-600 hover:text-[#3E2723] hover:bg-stone-100'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -93,81 +87,56 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenP
                 </button>
               );
             })}
-
-            {/* PRIMARY HIGHLIGHTED CHAT ROOMS LINK */}
-            <button
-              id="nav-link-chat-rooms"
-              onClick={() => handleNav('/chat')}
-              className={`ml-2 flex items-center gap-2.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 shadow-lg ${
-                currentPath.startsWith('/chat')
-                  ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 text-white ring-2 ring-indigo-400/50 shadow-indigo-500/25'
-                  : 'bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white shadow-indigo-600/30 hover:shadow-cyan-500/25 hover:scale-[1.02]'
-              }`}
-            >
-              <MessageSquare className="w-4 h-4 animate-pulse" />
-              <span>Chat Rooms</span>
-              <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold bg-white/20 rounded-full border border-white/20">
-                {totalOnline}
-              </span>
-            </button>
           </nav>
 
-          {/* Right Action Profile & Status */}
-          <div className="hidden sm:flex items-center gap-3">
-            {/* Live indicator */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/60 text-xs font-medium text-slate-300">
-              <span className={`w-2 h-2 rounded-full ${
-                connectionStatus === 'connected' ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'
-              }`} />
-              <span>{totalOnline} Online</span>
+          {/* Right Action: Presence & Profile */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            
+            {/* Live Count Pill */}
+            <div 
+              onClick={() => handleNav('/chat')}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-50 border border-orange-200 text-xs font-bold text-[#FF6B00] cursor-pointer hover:bg-orange-100 transition"
+              title="Active members online"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#FF6B00] animate-pulse" />
+              <span>{totalOnline || 23} Live</span>
             </div>
 
-            {/* User Profile button */}
+            {/* Profile Avatar / Setup */}
             {user ? (
               <button
                 id="user-profile-button"
                 onClick={onOpenProfileModal}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700 transition text-sm text-slate-200"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-stone-200 border border-stone-200 text-xs font-bold text-[#3E2723] transition"
               >
                 <div 
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white shadow"
-                  style={{ backgroundColor: user.avatarColor || '#6366f1' }}
+                  className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-xs"
+                  style={{ backgroundColor: user.avatarColor || '#FF6B00' }}
                 >
                   {user.name.charAt(0).toUpperCase()}
                 </div>
-                <span className="max-w-[100px] truncate font-medium">{user.name}</span>
-                <span className="text-xs text-slate-400">({user.gender})</span>
+                <span className="max-w-[70px] sm:max-w-[90px] truncate">{user.name}</span>
               </button>
             ) : (
               <button
                 id="enter-profile-button"
                 onClick={onOpenProfileModal}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-cyan-300 transition"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-[#3E2723] hover:bg-[#2D1C19] text-white text-xs font-bold transition shadow-xs"
               >
-                <UserIcon className="w-3.5 h-3.5" />
-                <span>Set Nickname</span>
+                <UserIcon className="w-3.5 h-3.5 text-[#FF6B00]" />
+                <span className="hidden sm:inline">Set Profile</span>
+                <span className="sm:hidden">Join</span>
               </button>
             )}
-          </div>
 
-          {/* Mobile Hamburger Toggle */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <button
-              id="mobile-chat-cta"
-              onClick={() => handleNav('/chat')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-bold shadow"
-            >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>Chat ({totalOnline})</span>
-            </button>
-
+            {/* Mobile Menu Hamburger */}
             <button
               id="mobile-menu-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition"
-              aria-label="Toggle Navigation Menu"
+              className="md:hidden p-1.5 rounded-lg text-[#3E2723] hover:bg-stone-100 transition"
+              aria-label="Toggle Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
@@ -176,50 +145,21 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenP
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-slate-800 bg-slate-900/95 px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top-3 duration-200">
-          {/* User profile strip */}
-          <div className="p-3 mb-3 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-between">
-            {user ? (
-              <div className="flex items-center gap-2.5">
-                <div 
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shadow"
-                  style={{ backgroundColor: user.avatarColor || '#6366f1' }}
-                >
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">{user.name}</div>
-                  <div className="text-xs text-slate-400">{user.age} yrs • {user.gender}</div>
-                </div>
-              </div>
-            ) : (
-              <div className="text-xs text-slate-400">Guest Visitor</div>
-            )}
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenProfileModal();
-              }}
-              className="text-xs font-medium text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2.5 py-1 rounded-lg"
-            >
-              {user ? 'Edit Profile' : 'Set Profile'}
-            </button>
-          </div>
-
+        <div className="md:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-5 space-y-2 shadow-lg animate-in slide-in-from-top-2 duration-150">
           <button
             onClick={() => handleNav('/chat')}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-bold shadow-md"
+            className="w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#3E2723] text-white text-sm font-bold shadow-xs"
           >
-            <div className="flex items-center gap-3">
-              <MessageSquare className="w-5 h-5" />
-              <span>Enter Chat Rooms</span>
+            <div className="flex items-center gap-2.5">
+              <MessageSquare className="w-4 h-4 text-[#FF6B00]" />
+              <span>Enter 5 Chat Rooms</span>
             </div>
-            <span className="bg-white/20 px-2.5 py-0.5 rounded-full text-xs font-bold">
-              {totalOnline} online
+            <span className="bg-[#FF6B00] px-2 py-0.5 rounded-full text-xs font-bold text-white">
+              {totalOnline || 23} online
             </span>
           </button>
 
-          <div className="grid grid-cols-2 gap-2 pt-2">
+          <div className="grid grid-cols-2 gap-2 pt-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPath === item.path;
@@ -227,31 +167,32 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate, onOpenP
                 <button
                   key={item.path}
                   onClick={() => handleNav(item.path)}
-                  className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition ${
                     isActive
-                      ? 'bg-slate-800 text-cyan-400 font-semibold'
-                      : 'text-slate-300 hover:bg-slate-800/60'
+                      ? 'bg-orange-50 text-[#FF6B00] border border-orange-200'
+                      : 'text-stone-700 hover:bg-stone-100 border border-stone-200'
                   }`}
                 >
-                  <Icon className="w-4 h-4 text-slate-400" />
+                  <Icon className="w-4 h-4 text-[#3E2723]" />
                   <span>{item.label}</span>
                 </button>
               );
             })}
           </div>
 
-          <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 px-1">
+          <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
             <button
               onClick={() => handleNav('/admin')}
-              className="flex items-center gap-1.5 text-slate-400 hover:text-indigo-400"
+              className="flex items-center gap-1 text-stone-600 hover:text-[#FF6B00] font-medium"
             >
               <ShieldAlert className="w-3.5 h-3.5" />
-              <span>Admin Panel</span>
+              <span>Admin Center</span>
             </button>
-            <span>Live Presence Enabled</span>
+            <span className="text-[11px] font-mono text-stone-400">Mobile Edition</span>
           </div>
         </div>
       )}
     </header>
   );
 };
+
